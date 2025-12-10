@@ -4,23 +4,26 @@ A one-page reference for the Calculator module.
 
 ---
 
-## Installation
+## Import
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+// Import all functions
+const { add, subtract, multiply, divide } = require('./calculator');
+
+// Or import selectively
+const { add, multiply } = require('./calculator');
 ```
 
 ---
 
-## Methods
+## Functions
 
-| Method | Syntax | Returns | Example |
-|--------|--------|---------|---------|
-| **Add** | `calc.add(a, b)` | Sum | `calc.add(5, 3)` → `8` |
-| **Subtract** | `calc.subtract(a, b)` | Difference | `calc.subtract(10, 4)` → `6` |
-| **Multiply** | `calc.multiply(a, b)` | Product | `calc.multiply(6, 7)` → `42` |
-| **Divide** | `calc.divide(a, b)` | Quotient | `calc.divide(20, 4)` → `5` |
+| Function | Syntax | Returns | Example |
+|----------|--------|---------|---------|
+| **Add** | `add(a, b)` | Sum | `add(5, 3)` → `8` |
+| **Subtract** | `subtract(a, b)` | Difference | `subtract(10, 4)` → `6` |
+| **Multiply** | `multiply(a, b)` | Product | `multiply(6, 7)` → `42` |
+| **Divide** | `divide(a, b)` | Quotient | `divide(20, 4)` → `5` |
 
 ---
 
@@ -39,8 +42,10 @@ const calc = new Calculator();
 
 ### Error Handling
 ```javascript
+const { divide } = require('./calculator');
+
 try {
-  const result = calc.divide(10, 0);
+  const result = divide(10, 0);
 } catch (error) {
   console.error(error.message);
 }
@@ -48,16 +53,20 @@ try {
 
 ### Chaining Operations
 ```javascript
-const step1 = calc.add(10, 5);      // 15
-const step2 = calc.multiply(step1, 2);  // 30
-const result = calc.divide(step2, 3);   // 10
+const { add, multiply, divide } = require('./calculator');
+
+const step1 = add(10, 5);        // 15
+const step2 = multiply(step1, 2); // 30
+const result = divide(step2, 3);  // 10
 ```
 
 ### Percentage Calculation
 ```javascript
+const { divide, multiply } = require('./calculator');
+
 function percentOf(percent, value) {
-  const decimal = calc.divide(percent, 100);
-  return calc.multiply(value, decimal);
+  const decimal = divide(percent, 100);
+  return multiply(value, decimal);
 }
 ```
 
@@ -81,7 +90,11 @@ function percentOf(percent, value) {
 3. **Type safety**: Always validates input types
    - Solution: Use `parseFloat()` on user input
 
-4. **Independent instances**: Each `new Calculator()` is separate
+4. **Tree-shaking**: Import only needed functions
+   - Example: `const { add } = require('./calculator')` for smaller bundles
+
+5. **No instantiation needed**: Functions are directly callable
+   - Benefit: Simpler and more functional programming style
 
 ---
 

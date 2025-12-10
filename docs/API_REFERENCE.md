@@ -6,66 +6,63 @@ Complete API documentation for the Calculator module.
 
 ## Table of Contents
 
-- [Class: Calculator](#class-calculator)
-  - [Constructor](#constructor)
-  - [Methods](#methods)
-    - [add()](#addab)
-    - [subtract()](#subtractab)
-    - [multiply()](#multiplyab)
-    - [divide()](#divideab)
-  - [Private Methods](#private-methods)
+- [Module Structure](#module-structure)
+  - [Importing Functions](#importing-functions)
+  - [Function Exports](#function-exports)
+- [Functions](#functions)
+  - [add()](#addab)
+  - [subtract()](#subtractab)
+  - [multiply()](#multiplyab)
+  - [divide()](#divideab)
 - [Error Reference](#error-reference)
 - [Type Definitions](#type-definitions)
 - [Examples by Category](#examples-by-category)
 
 ---
 
-## Class: Calculator
+## Module Structure
 
-The Calculator class provides basic arithmetic operations with comprehensive input validation and error handling.
+The Calculator module exports individual functions that can be imported selectively or all together.
 
-### Constructor
+### Importing Functions
 
-#### `new Calculator()`
+#### Import All Functions
 
-Creates a new instance of the Calculator class.
-
-**Syntax:**
 ```javascript
-const calc = new Calculator();
+// CommonJS
+const { add, subtract, multiply, divide } = require('./calculator');
+
+// ES6 Modules
+import { add, subtract, multiply, divide } from './calculator.js';
 ```
 
-**Parameters:**
-- None
+#### Selective Imports
 
-**Returns:**
-- `{Calculator}` - A new Calculator instance
+Import only the functions you need for optimal tree-shaking and smaller bundle sizes:
 
-**Description:**
-- Each Calculator instance is independent
-- No state is maintained between method calls
-- Multiple instances can coexist without interference
-
-**Examples:**
 ```javascript
-// Create a single instance
-const calc = new Calculator();
+// Import only addition
+const { add } = require('./calculator');
 
-// Create multiple instances
-const calc1 = new Calculator();
-const calc2 = new Calculator();
+// Import only what you need
+const { add, multiply } = require('./calculator');
 
-// Instances are independent
-console.log(calc1.add(1, 2));  // 3
-console.log(calc2.add(5, 5));  // 10
+// ES6
+import { divide } from './calculator.js';
 ```
 
-**Throws:**
-- None (constructor cannot fail)
+### Function Exports
+
+All functions are exported as named exports from the module:
+
+- `add(a, b)` - Addition
+- `subtract(a, b)` - Subtraction  
+- `multiply(a, b)` - Multiplication
+- `divide(a, b)` - Division
 
 ---
 
-## Methods
+## Functions
 
 ### `add(a, b)`
 
@@ -73,7 +70,7 @@ Adds two numbers and returns the sum.
 
 **Syntax:**
 ```javascript
-calc.add(a, b)
+add(a, b)
 ```
 
 **Parameters:**
@@ -97,63 +94,69 @@ calc.add(a, b)
 **Examples:**
 
 ```javascript
+const { add } = require('./calculator');
+
 // Basic addition
-calc.add(5, 3);           // 8
-calc.add(10, 20);         // 30
+add(5, 3);           // 8
+add(10, 20);         // 30
 
 // Negative numbers
-calc.add(-5, 3);          // -2
-calc.add(-10, -20);       // -30
+add(-5, 3);          // -2
+add(-10, -20);       // -30
 
 // Decimals
-calc.add(0.1, 0.2);       // 0.30000000000000004
-calc.add(1.5, 2.5);       // 4
+add(0.1, 0.2);       // 0.30000000000000004
+add(1.5, 2.5);       // 4
 
 // Zero
-calc.add(0, 5);           // 5
-calc.add(5, 0);           // 5
-calc.add(0, 0);           // 0
+add(0, 5);           // 5
+add(5, 0);           // 5
+add(0, 0);           // 0
 
 // Mixed positive and negative
-calc.add(-5, 10);         // 5
-calc.add(10, -5);         // 5
+add(-5, 10);         // 5
+add(10, -5);         // 5
 
 // Large numbers
-calc.add(1000000, 2000000);  // 3000000
+add(1000000, 2000000);  // 3000000
 ```
 
 **Edge Cases:**
 
 ```javascript
+const { add } = require('./calculator');
+
 // Very small decimals
-calc.add(0.0001, 0.0002);  // 0.0003
+add(0.0001, 0.0002);  // 0.0003
 
 // Negative zero
-calc.add(-0, 5);           // 5
-calc.add(0, -0);           // 0
+add(-0, 5);           // 5
+add(0, -0);           // 0
 
 // Near MAX_SAFE_INTEGER
-calc.add(Number.MAX_SAFE_INTEGER, 0);  // 9007199254740991
+add(Number.MAX_SAFE_INTEGER, 0);  // 9007199254740991
 ```
 
 **Error Examples:**
 
 ```javascript
+const { add } = require('./calculator');
+
 // Type errors
-calc.add('5', 3);          // Error: Both arguments must be numbers
-calc.add(5, null);         // Error: Both arguments must be numbers
-calc.add(undefined, 5);    // Error: Both arguments must be numbers
-calc.add([1], 2);          // Error: Both arguments must be numbers
-calc.add({value: 5}, 3);   // Error: Both arguments must be numbers
-calc.add(true, 5);         // Error: Both arguments must be numbers
+add('5', 3);          // Error: Both arguments must be numbers
+add(5, null);         // Error: Both arguments must be numbers
+add(undefined, 5);    // Error: Both arguments must be numbers
+add([1], 2);          // Error: Both arguments must be numbers
+add({value: 5}, 3);   // Error: Both arguments must be numbers
+add(true, 5);         // Error: Both arguments must be numbers
 
 // NaN errors
-calc.add(NaN, 5);          // Error: Arguments cannot be NaN
-calc.add(5, NaN);          // Error: Arguments cannot be NaN
+add(NaN, 5);          // Error: Arguments cannot be NaN
+add(5, NaN);          // Error: Arguments cannot be NaN
 
 // Infinity errors
-calc.add(Infinity, 5);     // Error: Arguments must be finite numbers
-calc.add(5, -Infinity);    // Error: Arguments must be finite numbers
+add(Infinity, 5);     // Error: Arguments must be finite numbers
+add(5, -Infinity);    // Error: Arguments must be finite numbers
 ```
 
 ---
@@ -164,7 +167,7 @@ Subtracts the second number from the first and returns the difference.
 
 **Syntax:**
 ```javascript
-calc.subtract(a, b)
+subtract(a, b)
 ```
 
 **Parameters:**
@@ -188,59 +191,65 @@ calc.subtract(a, b)
 **Examples:**
 
 ```javascript
+const { subtract } = require('./calculator');
+
 // Basic subtraction
-calc.subtract(10, 4);      // 6
-calc.subtract(20, 5);      // 15
+subtract(10, 4);      // 6
+subtract(20, 5);      // 15
 
 // Negative result
-calc.subtract(5, 10);      // -5
-calc.subtract(3, 8);       // -5
+subtract(5, 10);      // -5
+subtract(3, 8);       // -5
 
 // Negative numbers
-calc.subtract(-5, 3);      // -8
-calc.subtract(5, -3);      // 8
-calc.subtract(-5, -3);     // -2
+subtract(-5, 3);      // -8
+subtract(5, -3);      // 8
+subtract(-5, -3);     // -2
 
 // Decimals
-calc.subtract(5.5, 2.5);   // 3
-calc.subtract(10.75, 3.25); // 7.5
+subtract(5.5, 2.5);   // 3
+subtract(10.75, 3.25); // 7.5
 
 // Zero
-calc.subtract(10, 0);      // 10
-calc.subtract(0, 10);      // -10
-calc.subtract(0, 0);       // 0
+subtract(10, 0);      // 10
+subtract(0, 10);      // -10
+subtract(0, 0);       // 0
 
 // Same numbers (result is zero)
-calc.subtract(5, 5);       // 0
-calc.subtract(-5, -5);     // 0
+subtract(5, 5);       // 0
+subtract(-5, -5);     // 0
 ```
 
 **Edge Cases:**
 
 ```javascript
+const { subtract } = require('./calculator');
+
 // Very small differences
-calc.subtract(1.0001, 1.0);  // 0.00010000000000008882
+subtract(1.0001, 1.0);  // 0.00010000000000008882
 
 // Large numbers
-calc.subtract(1000000, 500000);  // 500000
+subtract(1000000, 500000);  // 500000
 
 // Boundary values
-calc.subtract(Number.MAX_SAFE_INTEGER, 0);  // 9007199254740991
-calc.subtract(0, Number.MIN_SAFE_INTEGER);  // 9007199254740991
+subtract(Number.MAX_SAFE_INTEGER, 0);  // 9007199254740991
+subtract(0, Number.MIN_SAFE_INTEGER);  // 9007199254740991
 ```
 
 **Error Examples:**
 
 ```javascript
+const { subtract } = require('./calculator');
+
 // Type errors
-calc.subtract('10', 4);    // Error: Both arguments must be numbers
-calc.subtract(10, null);   // Error: Both arguments must be numbers
+subtract('10', 4);    // Error: Both arguments must be numbers
+subtract(10, null);   // Error: Both arguments must be numbers
 
 // NaN errors
-calc.subtract(NaN, 5);     // Error: Arguments cannot be NaN
+subtract(NaN, 5);     // Error: Arguments cannot be NaN
 
 // Infinity errors
-calc.subtract(Infinity, 5); // Error: Arguments must be finite numbers
+subtract(Infinity, 5); // Error: Arguments must be finite numbers
 ```
 
 ---
@@ -251,7 +260,7 @@ Multiplies two numbers and returns the product.
 
 **Syntax:**
 ```javascript
-calc.multiply(a, b)
+multiply(a, b)
 ```
 
 **Parameters:**
@@ -275,61 +284,67 @@ calc.multiply(a, b)
 **Examples:**
 
 ```javascript
+const { multiply } = require('./calculator');
+
 // Basic multiplication
-calc.multiply(6, 7);       // 42
-calc.multiply(5, 5);       // 25
+multiply(6, 7);       // 42
+multiply(5, 5);       // 25
 
 // Negative numbers
-calc.multiply(-3, 4);      // -12
-calc.multiply(3, -4);      // -12
-calc.multiply(-3, -4);     // 12
+multiply(-3, 4);      // -12
+multiply(3, -4);      // -12
+multiply(-3, -4);     // 12
 
 // Decimals
-calc.multiply(2.5, 4);     // 10
-calc.multiply(0.5, 0.5);   // 0.25
+multiply(2.5, 4);     // 10
+multiply(0.5, 0.5);   // 0.25
 
 // Multiplication by zero
-calc.multiply(5, 0);       // 0
-calc.multiply(0, 5);       // 0
-calc.multiply(0, 0);       // 0
+multiply(5, 0);       // 0
+multiply(0, 5);       // 0
+multiply(0, 0);       // 0
 
 // Multiplication by one
-calc.multiply(5, 1);       // 5
-calc.multiply(1, 5);       // 5
+multiply(5, 1);       // 5
+multiply(1, 5);       // 5
 
 // Multiplication by negative one
-calc.multiply(5, -1);      // -5
-calc.multiply(-1, 5);      // -5
+multiply(5, -1);      // -5
+multiply(-1, 5);      // -5
 ```
 
 **Edge Cases:**
 
 ```javascript
+const { multiply } = require('./calculator');
+
 // Very small decimals
-calc.multiply(0.1, 0.1);   // 0.010000000000000002
+multiply(0.1, 0.1);   // 0.010000000000000002
 
 // Fractions
-calc.multiply(0.25, 0.5);  // 0.125
+multiply(0.25, 0.5);  // 0.125
 
 // Large numbers
-calc.multiply(1000, 1000); // 1000000
+multiply(1000, 1000); // 1000000
 
 // Near MAX_SAFE_INTEGER
-calc.multiply(Number.MAX_SAFE_INTEGER, 1);  // 9007199254740991
+multiply(Number.MAX_SAFE_INTEGER, 1);  // 9007199254740991
 ```
 
 **Error Examples:**
 
 ```javascript
+const { multiply } = require('./calculator');
+
 // Type errors
-calc.multiply('6', 7);     // Error: Both arguments must be numbers
-calc.multiply(6, [7]);     // Error: Both arguments must be numbers
+multiply('6', 7);     // Error: Both arguments must be numbers
+multiply(6, [7]);     // Error: Both arguments must be numbers
 
 // NaN errors
-calc.multiply(NaN, 5);     // Error: Arguments cannot be NaN
+multiply(NaN, 5);     // Error: Arguments cannot be NaN
 
 // Infinity errors
-calc.multiply(Infinity, 5); // Error: Arguments must be finite numbers
+multiply(Infinity, 5); // Error: Arguments must be finite numbers
 ```
 
 ---
@@ -340,7 +355,7 @@ Divides the first number by the second and returns the quotient.
 
 **Syntax:**
 ```javascript
-calc.divide(a, b)
+divide(a, b)
 ```
 
 **Parameters:**
@@ -365,82 +380,88 @@ calc.divide(a, b)
 **Examples:**
 
 ```javascript
+const { divide } = require('./calculator');
+
 // Basic division
-calc.divide(20, 4);        // 5
-calc.divide(15, 3);        // 5
+divide(20, 4);        // 5
+divide(15, 3);        // 5
 
 // Decimal results
-calc.divide(7, 2);         // 3.5
-calc.divide(10, 4);        // 2.5
+divide(7, 2);         // 3.5
+divide(10, 4);        // 2.5
 
 // Negative numbers
-calc.divide(-20, 4);       // -5
-calc.divide(20, -4);       // -5
-calc.divide(-20, -4);      // 5
+divide(-20, 4);       // -5
+divide(20, -4);       // -5
+divide(-20, -4);      // 5
 
 // Zero as dividend
-calc.divide(0, 5);         // 0
-calc.divide(0, -5);        // -0
+divide(0, 5);         // 0
+divide(0, -5);        // -0
 
 // Division by one
-calc.divide(10, 1);        // 10
-calc.divide(-10, 1);       // -10
+divide(10, 1);        // 10
+divide(-10, 1);       // -10
 
 // Division by negative one
-calc.divide(10, -1);       // -10
-calc.divide(-10, -1);      // 10
+divide(10, -1);       // -10
+divide(-10, -1);      // 10
 
 // Repeating decimals
-calc.divide(1, 3);         // 0.3333333333333333
-calc.divide(2, 3);         // 0.6666666666666666
+divide(1, 3);         // 0.3333333333333333
+divide(2, 3);         // 0.6666666666666666
 ```
 
 **Edge Cases:**
 
 ```javascript
+const { divide } = require('./calculator');
+
 // Very small results
-calc.divide(1, 1000000);   // 0.000001
+divide(1, 1000000);   // 0.000001
 
 // Large results
-calc.divide(1000000, 2);   // 500000
+divide(1000000, 2);   // 500000
 
 // Decimal division
-calc.divide(0.5, 0.25);    // 2
+divide(0.5, 0.25);    // 2
 
 // Near MAX_SAFE_INTEGER
-calc.divide(Number.MAX_SAFE_INTEGER, 1);  // 9007199254740991
+divide(Number.MAX_SAFE_INTEGER, 1);  // 9007199254740991
 ```
 
 **Error Examples:**
 
 ```javascript
+const { divide } = require('./calculator');
+
 // Division by zero errors
-calc.divide(10, 0);        // Error: Division by zero is not allowed
-calc.divide(0, 0);         // Error: Division by zero is not allowed
-calc.divide(-10, 0);       // Error: Division by zero is not allowed
+divide(10, 0);        // Error: Division by zero is not allowed
+divide(0, 0);         // Error: Division by zero is not allowed
+divide(-10, 0);       // Error: Division by zero is not allowed
 
 // Type errors
-calc.divide('20', 4);      // Error: Both arguments must be numbers
-calc.divide(20, null);     // Error: Both arguments must be numbers
+divide('20', 4);      // Error: Both arguments must be numbers
+divide(20, null);     // Error: Both arguments must be numbers
 
 // NaN errors
-calc.divide(NaN, 5);       // Error: Arguments cannot be NaN
-calc.divide(5, NaN);       // Error: Arguments cannot be NaN
+divide(NaN, 5);       // Error: Arguments cannot be NaN
+divide(5, NaN);       // Error: Arguments cannot be NaN
 
 // Infinity errors
-calc.divide(Infinity, 5);  // Error: Arguments must be finite numbers
-calc.divide(5, Infinity);  // Error: Arguments must be finite numbers
+divide(Infinity, 5);  // Error: Arguments must be finite numbers
+divide(5, Infinity);  // Error: Arguments must be finite numbers
 ```
 
 ---
 
-## Private Methods
+## Internal Functions
 
-### `_validateNumbers(a, b)`
+### `validateNumbers(a, b)`
 
-Internal validation method called by all public methods.
+Internal validation function called by all exported functions.
 
-**⚠️ Private Method** - Not intended for external use
+**⚠️ Internal Function** - Exported but primarily for internal use
 
 **Purpose:**
 - Validates that both arguments are valid numbers
@@ -492,8 +513,10 @@ if (!isFinite(a) || !isFinite(b))
 #### Pattern 1: Try-Catch
 
 ```javascript
+const { divide } = require('./calculator');
+
 try {
-  const result = calc.divide(a, b);
+  const result = divide(a, b);
   console.log(`Result: ${result}`);
 } catch (error) {
   console.error(`Error: ${error.message}`);
@@ -503,6 +526,8 @@ try {
 #### Pattern 2: Pre-Validation
 
 ```javascript
+const { divide } = require('./calculator');
+
 function safeDivide(a, b) {
   if (typeof a !== 'number' || typeof b !== 'number') {
     return { error: 'Invalid types' };
@@ -510,18 +535,20 @@ function safeDivide(a, b) {
   if (b === 0) {
     return { error: 'Division by zero' };
   }
-  return { result: calc.divide(a, b) };
+  return { result: divide(a, b) };
 }
 ```
 
 #### Pattern 3: Error Wrapper
 
 ```javascript
+const calculator = require('./calculator');
+
 function calculate(operation, a, b) {
   const errors = [];
   
   try {
-    return { success: true, result: calc[operation](a, b) };
+    return { success: true, result: calculator[operation](a, b) };
   } catch (error) {
     return { success: false, error: error.message };
   }
@@ -535,61 +562,77 @@ function calculate(operation, a, b) {
 ### TypeScript Definitions
 
 ```typescript
-declare class Calculator {
-  /**
-   * Creates a new Calculator instance
-   */
-  constructor();
+/**
+ * Adds two numbers
+ * @param a - First number
+ * @param b - Second number
+ * @returns Sum of a and b
+ * @throws {Error} If arguments are invalid
+ */
+export function add(a: number, b: number): number;
 
-  /**
-   * Adds two numbers
-   * @param a - First number
-   * @param b - Second number
-   * @returns Sum of a and b
-   * @throws {Error} If arguments are invalid
-   */
-  add(a: number, b: number): number;
+/**
+ * Subtracts second number from first
+ * @param a - Minuend
+ * @param b - Subtrahend
+ * @returns Difference of a and b
+ * @throws {Error} If arguments are invalid
+ */
+export function subtract(a: number, b: number): number;
 
-  /**
-   * Subtracts second number from first
-   * @param a - Minuend
-   * @param b - Subtrahend
-   * @returns Difference of a and b
-   * @throws {Error} If arguments are invalid
-   */
-  subtract(a: number, b: number): number;
+/**
+ * Multiplies two numbers
+ * @param a - First factor
+ * @param b - Second factor
+ * @returns Product of a and b
+ * @throws {Error} If arguments are invalid
+ */
+export function multiply(a: number, b: number): number;
 
-  /**
-   * Multiplies two numbers
-   * @param a - First factor
-   * @param b - Second factor
-   * @returns Product of a and b
-   * @throws {Error} If arguments are invalid
-   */
-  multiply(a: number, b: number): number;
-
-  /**
-   * Divides first number by second
-   * @param a - Dividend
-   * @param b - Divisor
-   * @returns Quotient of a and b
-   * @throws {Error} If arguments are invalid or b is zero
-   */
-  divide(a: number, b: number): number;
-}
-
-export = Calculator;
+/**
+ * Divides first number by second
+ * @param a - Dividend
+ * @param b - Divisor
+ * @returns Quotient of a and b
+ * @throws {Error} If arguments are invalid or b is zero
+ */
+export function divide(a: number, b: number): number;
 ```
 
 ### JSDoc Definitions
 
 ```javascript
 /**
- * @typedef {Object} Calculator
- * @property {function(number, number): number} add - Adds two numbers
- * @property {function(number, number): number} subtract - Subtracts two numbers
- * @property {function(number, number): number} multiply - Multiplies two numbers
- * @property {function(number, number): number} divide - Divides two numbers
+ * @module calculator
+ */
+
+/**
+ * @function add
+ * @param {number} a - First number
+ * @param {number} b - Second number
+ * @returns {number} Sum of a and b
+ */
+
+/**
+ * @function subtract
+ * @param {number} a - Minuend
+ * @param {number} b - Subtrahend
+ * @returns {number} Difference of a and b
+ */
+
+/**
+ * @function multiply
+ * @param {number} a - First factor
+ * @param {number} b - Second factor
+ * @returns {number} Product of a and b
+ */
+
+/**
+ * @function divide
+ * @param {number} a - Dividend
+ * @param {number} b - Divisor
+ * @returns {number} Quotient of a and b
+ * @throws {Error} Division by zero is not allowed
  */
 ```
 
@@ -600,46 +643,54 @@ export = Calculator;
 ### Basic Arithmetic
 
 ```javascript
-const calc = new Calculator();
+const { add, subtract, multiply, divide } = require('./calculator');
 
 // Four operations
-calc.add(5, 3);        // 8
-calc.subtract(10, 4);  // 6
-calc.multiply(6, 7);   // 42
-calc.divide(20, 4);    // 5
+add(5, 3);        // 8
+subtract(10, 4);  // 6
+multiply(6, 7);   // 42
+divide(20, 4);    // 5
 ```
 
 ### Working with Decimals
 
 ```javascript
-calc.add(0.1, 0.2);       // 0.30000000000000004
-calc.subtract(5.5, 2.5);  // 3
-calc.multiply(2.5, 4);    // 10
-calc.divide(7, 2);        // 3.5
+const { add, subtract, multiply, divide } = require('./calculator');
+
+add(0.1, 0.2);       // 0.30000000000000004
+subtract(5.5, 2.5);  // 3
+multiply(2.5, 4);    // 10
+divide(7, 2);        // 3.5
 ```
 
 ### Working with Negatives
 
 ```javascript
-calc.add(-5, 3);          // -2
-calc.subtract(-5, -3);    // -2
-calc.multiply(-3, 4);     // -12
-calc.divide(-20, 4);      // -5
+const { add, subtract, multiply, divide } = require('./calculator');
+
+add(-5, 3);          // -2
+subtract(-5, -3);    // -2
+multiply(-3, 4);     // -12
+divide(-20, 4);      // -5
 ```
 
 ### Chaining Operations
 
 ```javascript
-const step1 = calc.add(10, 5);          // 15
-const step2 = calc.multiply(step1, 2);  // 30
-const result = calc.divide(step2, 3);   // 10
+const { add, multiply, divide } = require('./calculator');
+
+const step1 = add(10, 5);          // 15
+const step2 = multiply(step1, 2);  // 30
+const result = divide(step2, 3);   // 10
 ```
 
 ### Error Handling
 
 ```javascript
+const { divide } = require('./calculator');
+
 try {
-  calc.divide(10, 0);
+  divide(10, 0);
 } catch (error) {
   console.error(error.message);  // "Division by zero is not allowed"
 }

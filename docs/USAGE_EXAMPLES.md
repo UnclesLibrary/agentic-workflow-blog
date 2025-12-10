@@ -20,22 +20,22 @@ Practical examples and use cases for the Calculator module.
 ### Import and Initialize
 
 ```javascript
-// CommonJS
-const Calculator = require('./calculator');
-const calc = new Calculator();
+// CommonJS - Import all functions
+const { add, subtract, multiply, divide } = require('./calculator');
+
+// CommonJS - Selective import
+const { add, multiply } = require('./calculator');
 
 // ES6
-import Calculator from './calculator.js';
-const calc = new Calculator();
+import { add, subtract, multiply, divide } from './calculator.js';
 ```
 
 ### Your First Calculation
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { add } = require('./calculator');
 
-const sum = calc.add(5, 3);
+const sum = add(5, 3);
 console.log(`5 + 3 = ${sum}`);  // 5 + 3 = 8
 ```
 
@@ -46,76 +46,76 @@ console.log(`5 + 3 = ${sum}`);  // 5 + 3 = 8
 ### Example 1: Simple Addition
 
 ```javascript
-const calc = new Calculator();
+const { add } = require('./calculator');
 
 // Add positive numbers
-console.log(calc.add(10, 20));     // 30
+console.log(add(10, 20));     // 30
 
 // Add negative numbers
-console.log(calc.add(-5, -3));     // -8
+console.log(add(-5, -3));     // -8
 
 // Mix positive and negative
-console.log(calc.add(10, -3));     // 7
+console.log(add(10, -3));     // 7
 
 // Add decimals
-console.log(calc.add(1.5, 2.5));   // 4
+console.log(add(1.5, 2.5));   // 4
 ```
 
 ### Example 2: Subtraction Scenarios
 
 ```javascript
-const calc = new Calculator();
+const { subtract } = require('./calculator');
 
 // Basic subtraction
-console.log(calc.subtract(10, 3));    // 7
+console.log(subtract(10, 3));    // 7
 
 // Negative result
-console.log(calc.subtract(3, 10));    // -7
+console.log(subtract(3, 10));    // -7
 
 // Subtract negative (like adding)
-console.log(calc.subtract(10, -5));   // 15
+console.log(subtract(10, -5));   // 15
 
 // Same numbers
-console.log(calc.subtract(5, 5));     // 0
+console.log(subtract(5, 5));     // 0
 ```
 
 ### Example 3: Multiplication Patterns
 
 ```javascript
-const calc = new Calculator();
+const { multiply } = require('./calculator');
 
 // Regular multiplication
-console.log(calc.multiply(5, 4));     // 20
+console.log(multiply(5, 4));     // 20
 
 // Multiply by zero
-console.log(calc.multiply(5, 0));     // 0
+console.log(multiply(5, 0));     // 0
 
 // Multiply by one (identity)
-console.log(calc.multiply(5, 1));     // 5
+console.log(multiply(5, 1));     // 5
 
 // Multiply by negative one (negate)
-console.log(calc.multiply(5, -1));    // -5
+console.log(multiply(5, -1));    // -5
 
 // Decimals
-console.log(calc.multiply(0.5, 4));   // 2
+console.log(multiply(0.5, 4));   // 2
 ```
 
 ### Example 4: Division Examples
 
 ```javascript
-const calc = new Calculator();
+const { divide } = require('./calculator');
 
 // Exact division
-console.log(calc.divide(20, 4));      // 5
+console.log(divide(20, 4));      // 5
 
 // Decimal result
-console.log(calc.divide(7, 2));       // 3.5
+console.log(divide(7, 2));       // 3.5
 
 // Divide zero
-console.log(calc.divide(0, 5));       // 0
+console.log(divide(0, 5));       // 0
 
 // Repeating decimal
-console.log(calc.divide(1, 3));       // 0.3333333333333333
+console.log(divide(1, 3));       // 0.3333333333333333
 ```
 
 ---
@@ -125,15 +125,14 @@ console.log(calc.divide(1, 3));       // 0.3333333333333333
 ### Use Case 1: Shopping Cart Total
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { add } = require('./calculator');
 
 function calculateCartTotal(items) {
   let subtotal = 0;
   
   // Sum all item prices
   for (const item of items) {
-    subtotal = calc.add(subtotal, item.price);
+    subtotal = add(subtotal, item.price);
   }
   
   return subtotal;
@@ -152,15 +151,15 @@ console.log(`Total: $${total.toFixed(2)}`);  // Total: $21.48
 ### Use Case 2: Tax Calculation
 
 ```javascript
-const calc = new Calculator();
+const { multiply, add } = require('./calculator');
 
 function calculateTax(amount, taxRate) {
-  return calc.multiply(amount, taxRate);
+  return multiply(amount, taxRate);
 }
 
 function calculateTotalWithTax(amount, taxRate) {
   const tax = calculateTax(amount, taxRate);
-  return calc.add(amount, tax);
+  return add(amount, tax);
 }
 
 const price = 100;
@@ -177,16 +176,16 @@ console.log(`Total: $${total.toFixed(2)}`); // Total: $108.00
 ### Use Case 3: Tip Calculator
 
 ```javascript
-const calc = new Calculator();
+const { divide, multiply, add } = require('./calculator');
 
 function calculateTip(billAmount, tipPercent) {
-  const tipDecimal = calc.divide(tipPercent, 100);
-  return calc.multiply(billAmount, tipDecimal);
+  const tipDecimal = divide(tipPercent, 100);
+  return multiply(billAmount, tipDecimal);
 }
 
 function calculateTotalBill(billAmount, tipPercent) {
   const tip = calculateTip(billAmount, tipPercent);
-  return calc.add(billAmount, tip);
+  return add(billAmount, tip);
 }
 
 const bill = 45.50;
@@ -203,28 +202,28 @@ console.log(`Total: $${total.toFixed(2)}`);    // Total: $53.69
 ### Use Case 4: Unit Conversion
 
 ```javascript
-const calc = new Calculator();
+const { multiply, divide, add, subtract } = require('./calculator');
 
 // Distance conversions
 function milesToKilometers(miles) {
-  return calc.multiply(miles, 1.60934);
+  return multiply(miles, 1.60934);
 }
 
 function kilometersToMiles(km) {
-  return calc.divide(km, 1.60934);
+  return divide(km, 1.60934);
 }
 
 // Temperature conversions
 function celsiusToFahrenheit(celsius) {
-  const multiplied = calc.multiply(celsius, 9);
-  const divided = calc.divide(multiplied, 5);
-  return calc.add(divided, 32);
+  const multiplied = multiply(celsius, 9);
+  const divided = divide(multiplied, 5);
+  return add(divided, 32);
 }
 
 function fahrenheitToCelsius(fahrenheit) {
-  const subtracted = calc.subtract(fahrenheit, 32);
-  const multiplied = calc.multiply(subtracted, 5);
-  return calc.divide(multiplied, 9);
+  const subtracted = subtract(fahrenheit, 32);
+  const multiplied = multiply(subtracted, 5);
+  return divide(multiplied, 9);
 }
 
 console.log(milesToKilometers(10));      // 16.0934
@@ -236,7 +235,7 @@ console.log(fahrenheitToCelsius(77));    // 25
 ### Use Case 5: Grade Average Calculator
 
 ```javascript
-const calc = new Calculator();
+const { add, divide, multiply } = require('./calculator');
 
 function calculateAverage(grades) {
   if (grades.length === 0) {
@@ -245,10 +244,10 @@ function calculateAverage(grades) {
   
   let sum = 0;
   for (const grade of grades) {
-    sum = calc.add(sum, grade);
+    sum = add(sum, grade);
   }
   
-  return calc.divide(sum, grades.length);
+  return divide(sum, grades.length);
 }
 
 function calculateWeightedAverage(items) {
@@ -257,12 +256,12 @@ function calculateWeightedAverage(items) {
   let totalWeight = 0;
   
   for (const item of items) {
-    const weighted = calc.multiply(item.value, item.weight);
-    totalValue = calc.add(totalValue, weighted);
-    totalWeight = calc.add(totalWeight, item.weight);
+    const weighted = multiply(item.value, item.weight);
+    totalValue = add(totalValue, weighted);
+    totalWeight = add(totalWeight, item.weight);
   }
   
-  return calc.divide(totalValue, totalWeight);
+  return divide(totalValue, totalWeight);
 }
 
 // Regular average
@@ -283,24 +282,24 @@ console.log(`Weighted Average: ${weightedAvg.toFixed(2)}`);  // Weighted Average
 ### Use Case 6: Interest Calculator
 
 ```javascript
-const calc = new Calculator();
+const { multiply, add, subtract } = require('./calculator');
 
 function calculateSimpleInterest(principal, rate, time) {
   // I = P * r * t
-  const rateMultiplied = calc.multiply(principal, rate);
-  return calc.multiply(rateMultiplied, time);
+  const rateMultiplied = multiply(principal, rate);
+  return multiply(rateMultiplied, time);
 }
 
 function calculateCompoundInterest(principal, rate, time) {
   // A = P(1 + r)^t (simplified yearly compounding)
-  const onePlusRate = calc.add(1, rate);
+  const onePlusRate = add(1, rate);
   let amount = principal;
   
   for (let i = 0; i < time; i++) {
-    amount = calc.multiply(amount, onePlusRate);
+    amount = multiply(amount, onePlusRate);
   }
   
-  return calc.subtract(amount, principal);
+  return subtract(amount, principal);
 }
 
 const principal = 1000;
@@ -317,16 +316,16 @@ console.log(`Compound Interest: $${compoundInterest.toFixed(2)}`);  // Compound 
 ### Use Case 7: Discount Calculator
 
 ```javascript
-const calc = new Calculator();
+const { divide, multiply, subtract } = require('./calculator');
 
 function calculateDiscount(originalPrice, discountPercent) {
-  const discountDecimal = calc.divide(discountPercent, 100);
-  return calc.multiply(originalPrice, discountDecimal);
+  const discountDecimal = divide(discountPercent, 100);
+  return multiply(originalPrice, discountDecimal);
 }
 
 function calculateSalePrice(originalPrice, discountPercent) {
   const discount = calculateDiscount(originalPrice, discountPercent);
-  return calc.subtract(originalPrice, discount);
+  return subtract(originalPrice, discount);
 }
 
 const originalPrice = 79.99;
@@ -343,11 +342,11 @@ console.log(`Sale Price: $${salePrice.toFixed(2)}`);             // Sale Price: 
 ### Use Case 8: Recipe Scaler
 
 ```javascript
-const calc = new Calculator();
+const { divide, multiply } = require('./calculator');
 
 function scaleIngredient(originalAmount, originalServings, desiredServings) {
-  const scaleFactor = calc.divide(desiredServings, originalServings);
-  return calc.multiply(originalAmount, scaleFactor);
+  const scaleFactor = divide(desiredServings, originalServings);
+  return multiply(originalAmount, scaleFactor);
 }
 
 function scaleRecipe(recipe, desiredServings) {
@@ -396,34 +395,33 @@ console.log(`Chocolate: ${scaledRecipe.ingredients.chocolate} cups`); // 4 cups
 ### Pattern 1: Calculator Wrapper with History
 
 ```javascript
-const Calculator = require('./calculator');
+const { add, subtract, multiply, divide } = require('./calculator');
 
 class CalculatorWithHistory {
   constructor() {
-    this.calc = new Calculator();
     this.history = [];
   }
   
   add(a, b) {
-    const result = this.calc.add(a, b);
+    const result = add(a, b);
     this.history.push({ operation: 'add', a, b, result });
     return result;
   }
   
   subtract(a, b) {
-    const result = this.calc.subtract(a, b);
+    const result = subtract(a, b);
     this.history.push({ operation: 'subtract', a, b, result });
     return result;
   }
   
   multiply(a, b) {
-    const result = this.calc.multiply(a, b);
+    const result = multiply(a, b);
     this.history.push({ operation: 'multiply', a, b, result });
     return result;
   }
   
   divide(a, b) {
-    const result = this.calc.divide(a, b);
+    const result = divide(a, b);
     this.history.push({ operation: 'divide', a, b, result });
     return result;
   }
@@ -454,12 +452,11 @@ console.log(calc.getHistory());
 ### Pattern 2: Safe Calculator with Result Object
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const calculator = require('./calculator');
 
 function safeCalculate(operation, a, b) {
   try {
-    const result = calc[operation](a, b);
+    const result = calculator[operation](a, b);
     return {
       success: true,
       result,
@@ -489,20 +486,19 @@ console.log(result2);
 ### Pattern 3: Batch Operations
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { add, multiply } = require('./calculator');
 
 function batchAdd(numbers) {
   if (numbers.length === 0) return 0;
   
-  return numbers.reduce((sum, num) => calc.add(sum, num), 0);
+  return numbers.reduce((sum, num) => add(sum, num), 0);
 }
 
 function batchMultiply(numbers) {
   if (numbers.length === 0) return 0;
   if (numbers.length === 1) return numbers[0];
   
-  return numbers.reduce((product, num) => calc.multiply(product, num));
+  return numbers.reduce((product, num) => multiply(product, num));
 }
 
 // Usage
@@ -516,8 +512,7 @@ console.log(product);  // 24
 ### Pattern 4: Expression Evaluator
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { add, subtract, multiply, divide } = require('./calculator');
 
 function evaluateExpression(expression) {
   // Simple expression: "10 + 5 * 2"
@@ -532,16 +527,16 @@ function evaluateExpression(expression) {
     
     switch (operator) {
       case '+':
-        result = calc.add(result, operand);
+        result = add(result, operand);
         break;
       case '-':
-        result = calc.subtract(result, operand);
+        result = subtract(result, operand);
         break;
       case '*':
-        result = calc.multiply(result, operand);
+        result = multiply(result, operand);
         break;
       case '/':
-        result = calc.divide(result, operand);
+        result = divide(result, operand);
         break;
     }
   }
@@ -557,39 +552,38 @@ console.log(evaluateExpression("10 + 5 - 3")); // 12
 ### Pattern 5: Percentage Helper Functions
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { divide, multiply, subtract, add } = require('./calculator');
 
 const PercentageUtils = {
   // What is X% of Y?
   percentOf(percent, value) {
-    const decimal = calc.divide(percent, 100);
-    return calc.multiply(value, decimal);
+    const decimal = divide(percent, 100);
+    return multiply(value, decimal);
   },
   
   // X is what percent of Y?
   whatPercentOf(value, total) {
-    const ratio = calc.divide(value, total);
-    return calc.multiply(ratio, 100);
+    const ratio = divide(value, total);
+    return multiply(ratio, 100);
   },
   
   // What is the percent change from X to Y?
   percentChange(oldValue, newValue) {
-    const difference = calc.subtract(newValue, oldValue);
-    const ratio = calc.divide(difference, oldValue);
-    return calc.multiply(ratio, 100);
+    const difference = subtract(newValue, oldValue);
+    const ratio = divide(difference, oldValue);
+    return multiply(ratio, 100);
   },
   
   // Increase X by Y%
   increaseByPercent(value, percent) {
     const increase = this.percentOf(percent, value);
-    return calc.add(value, increase);
+    return add(value, increase);
   },
   
   // Decrease X by Y%
   decreaseByPercent(value, percent) {
     const decrease = this.percentOf(percent, value);
-    return calc.subtract(value, decrease);
+    return subtract(value, decrease);
   }
 };
 
@@ -609,10 +603,9 @@ console.log(PercentageUtils.decreaseByPercent(100, 10));   // 90
 
 ```javascript
 const express = require('express');
-const Calculator = require('./calculator');
+const calculator = require('./calculator');
 
 const app = express();
-const calc = new Calculator();
 
 app.use(express.json());
 
@@ -620,7 +613,7 @@ app.post('/calculate', (req, res) => {
   const { operation, a, b } = req.body;
   
   try {
-    const result = calc[operation](a, b);
+    const result = calculator[operation](a, b);
     res.json({ success: true, result });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
@@ -636,18 +629,19 @@ app.listen(3000, () => {
 
 ```javascript
 import React, { useState } from 'react';
-import Calculator from './calculator';
+import { add, subtract, multiply, divide } from './calculator';
 
 function CalculatorComponent() {
   const [a, setA] = useState(0);
   const [b, setB] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const calc = new Calculator();
+  
+  const operations = { add, subtract, multiply, divide };
   
   const handleCalculate = (operation) => {
     try {
-      const res = calc[operation](parseFloat(a), parseFloat(b));
+      const res = operations[operation](parseFloat(a), parseFloat(b));
       setResult(res);
       setError(null);
     } catch (err) {
@@ -680,8 +674,7 @@ export default CalculatorComponent;
 ```javascript
 #!/usr/bin/env node
 
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const calculator = require('./calculator');
 
 const args = process.argv.slice(2);
 
@@ -696,7 +689,7 @@ const numA = parseFloat(a);
 const numB = parseFloat(b);
 
 try {
-  const result = calc[operation](numA, numB);
+  const result = calculator[operation](numA, numB);
   console.log(`${a} ${operation} ${b} = ${result}`);
 } catch (error) {
   console.error(`Error: ${error.message}`);
@@ -712,13 +705,17 @@ try {
 
 **Problem:**
 ```javascript
-const result = calc.add(0.1, 0.2);
+const { add } = require('./calculator');
+
+const result = add(0.1, 0.2);
 console.log(result);  // 0.30000000000000004
 ```
 
 **Solution:**
 ```javascript
-const result = calc.add(0.1, 0.2);
+const { add } = require('./calculator');
+
+const result = add(0.1, 0.2);
 console.log(result.toFixed(2));  // "0.30"
 // Or
 console.log(Math.round(result * 100) / 100);  // 0.3
@@ -728,13 +725,17 @@ console.log(Math.round(result * 100) / 100);  // 0.3
 
 **Problem:**
 ```javascript
-const result = calc.divide(10, 0);  // Throws error, crashes program
+const { divide } = require('./calculator');
+
+const result = divide(10, 0);  // Throws error, crashes program
 ```
 
 **Solution:**
 ```javascript
+const { divide } = require('./calculator');
+
 try {
-  const result = calc.divide(10, 0);
+  const result = divide(10, 0);
 } catch (error) {
   console.error('Division failed:', error.message);
 }
@@ -744,16 +745,20 @@ try {
 
 **Problem:**
 ```javascript
+const { add } = require('./calculator');
+
 const input1 = '5';  // String from user input
 const input2 = '3';
-calc.add(input1, input2);  // Error: Both arguments must be numbers
+add(input1, input2);  // Error: Both arguments must be numbers
 ```
 
 **Solution:**
 ```javascript
+const { add } = require('./calculator');
+
 const num1 = parseFloat(input1);
 const num2 = parseFloat(input2);
-calc.add(num1, num2);  // Works correctly
+add(num1, num2);  // Works correctly
 ```
 
 ### Pitfall 4: Not Validating Division by Zero

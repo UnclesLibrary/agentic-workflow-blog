@@ -23,6 +23,9 @@ The Calculator is a robust JavaScript module that provides basic arithmetic oper
 ### Key Features
 
 - ✅ Four core arithmetic operations: add, subtract, multiply, divide
+- ✅ Function-based API (no class instantiation needed)
+- ✅ Tree-shaking support for optimal bundle sizes
+- ✅ Selective imports (import only what you need)
 - ✅ Comprehensive input validation (type checking, NaN/Infinity detection)
 - ✅ Division by zero prevention
 - ✅ Support for integers and decimal numbers
@@ -68,30 +71,40 @@ npm install @agentic-workflow/calculator
 ### Basic Usage (CommonJS)
 
 ```javascript
-const Calculator = require('./calculator');
-
-const calc = new Calculator();
+// Import all functions
+const { add, subtract, multiply, divide } = require('./calculator');
 
 // Addition
-console.log(calc.add(5, 3));        // Output: 8
+console.log(add(5, 3));        // Output: 8
 
 // Subtraction
-console.log(calc.subtract(10, 4));  // Output: 6
+console.log(subtract(10, 4));  // Output: 6
 
 // Multiplication
-console.log(calc.multiply(6, 7));   // Output: 42
+console.log(multiply(6, 7));   // Output: 42
 
 // Division
-console.log(calc.divide(20, 4));    // Output: 5
+console.log(divide(20, 4));    // Output: 5
+```
+
+### Selective Imports
+
+Import only the functions you need for better tree-shaking:
+
+```javascript
+// Import only what you need
+const { add, multiply } = require('./calculator');
+
+const sum = add(10, 20);        // 30
+const product = multiply(5, 6); // 30
 ```
 
 ### ES6 Modules
 
 ```javascript
-import Calculator from './calculator.js';
+import { add, subtract, multiply, divide } from './calculator.js';
 
-const calc = new Calculator();
-const result = calc.add(10, 20);    // 30
+const result = add(10, 20);    // 30
 ```
 
 ### Running the Examples
@@ -130,16 +143,18 @@ All operations automatically validate inputs:
 The Calculator provides clear, actionable error messages:
 
 ```javascript
-calc.add('5', 3);
+const { add, divide, multiply } = require('./calculator');
+
+add('5', 3);
 // Error: Both arguments must be numbers
 
-calc.divide(10, 0);
+divide(10, 0);
 // Error: Division by zero is not allowed
 
-calc.multiply(NaN, 5);
+multiply(NaN, 5);
 // Error: Arguments cannot be NaN
 
-calc.add(Infinity, 5);
+add(Infinity, 5);
 // Error: Arguments must be finite numbers
 ```
 
@@ -147,30 +162,29 @@ calc.add(Infinity, 5);
 
 ## API Reference
 
-### Constructor
+### Importing Functions
 
-#### `new Calculator()`
-
-Creates a new Calculator instance.
+#### Import All Functions
 
 ```javascript
-const calc = new Calculator();
+const { add, subtract, multiply, divide } = require('./calculator');
 ```
 
-**Parameters:** None
+#### Selective Imports
 
-**Returns:** Calculator instance
+Import only the functions you need for better tree-shaking and smaller bundle sizes:
 
-**Example:**
 ```javascript
-const calc1 = new Calculator();
-const calc2 = new Calculator();
-// Each instance is independent
+// Import only addition and multiplication
+const { add, multiply } = require('./calculator');
+
+// Import only division
+const { divide } = require('./calculator');
 ```
 
 ---
 
-### Methods
+### Functions
 
 #### `add(a, b)`
 
@@ -189,10 +203,12 @@ Adds two numbers together.
 
 **Examples:**
 ```javascript
-calc.add(5, 3);        // 8
-calc.add(-10, 25);     // 15
-calc.add(0.1, 0.2);    // 0.30000000000000004 (see Floating Point note)
-calc.add(-5, -3);      // -8
+const { add } = require('./calculator');
+
+add(5, 3);        // 8
+add(-10, 25);     // 15
+add(0.1, 0.2);    // 0.30000000000000004 (see Floating Point note)
+add(-5, -3);      // -8
 ```
 
 ---
@@ -214,10 +230,12 @@ Subtracts the second number from the first.
 
 **Examples:**
 ```javascript
-calc.subtract(10, 4);    // 6
-calc.subtract(5, 12);    // -7
-calc.subtract(0, 5);     // -5
-calc.subtract(10, 10);   // 0
+const { subtract } = require('./calculator');
+
+subtract(10, 4);    // 6
+subtract(5, 12);    // -7
+subtract(0, 5);     // -5
+subtract(10, 10);   // 0
 ```
 
 ---
@@ -239,10 +257,12 @@ Multiplies two numbers.
 
 **Examples:**
 ```javascript
-calc.multiply(6, 7);      // 42
-calc.multiply(-3, 4);     // -12
-calc.multiply(5, 0);      // 0
-calc.multiply(0.5, 0.5);  // 0.25
+const { multiply } = require('./calculator');
+
+multiply(6, 7);      // 42
+multiply(-3, 4);     // -12
+multiply(5, 0);      // 0
+multiply(0.5, 0.5);  // 0.25
 ```
 
 ---
@@ -265,14 +285,16 @@ Divides the first number by the second.
 
 **Examples:**
 ```javascript
-calc.divide(20, 4);    // 5
-calc.divide(7, 2);     // 3.5
-calc.divide(0, 5);     // 0
-calc.divide(1, 3);     // 0.3333333333333333
+const { divide } = require('./calculator');
+
+divide(20, 4);    // 5
+divide(7, 2);     // 3.5
+divide(0, 5);     // 0
+divide(1, 3);     // 0.3333333333333333
 
 // Error cases
-calc.divide(10, 0);    // Error: Division by zero is not allowed
-calc.divide(0, 0);     // Error: Division by zero is not allowed
+divide(10, 0);    // Error: Division by zero is not allowed
+divide(0, 0);     // Error: Division by zero is not allowed
 ```
 
 ---
@@ -282,28 +304,27 @@ calc.divide(0, 0);     // Error: Division by zero is not allowed
 ### Example 1: Simple Calculations
 
 ```javascript
-const Calculator = require('./calculator');
-const calc = new Calculator();
+const { multiply, add } = require('./calculator');
 
 // Calculate total price with tax
 const price = 100;
 const taxRate = 0.08;
-const tax = calc.multiply(price, taxRate);        // 8
-const total = calc.add(price, tax);               // 108
+const tax = multiply(price, taxRate);        // 8
+const total = add(price, tax);               // 108
 
-console.log(`Total: $${total}`);                  // Total: $108
+console.log(`Total: $${total}`);             // Total: $108
 ```
 
 ### Example 2: Temperature Conversion
 
 ```javascript
-const calc = new Calculator();
+const { multiply, divide, add } = require('./calculator');
 
 // Celsius to Fahrenheit: F = C * 9/5 + 32
 function celsiusToFahrenheit(celsius) {
-  const step1 = calc.multiply(celsius, 9);
-  const step2 = calc.divide(step1, 5);
-  const fahrenheit = calc.add(step2, 32);
+  const step1 = multiply(celsius, 9);
+  const step2 = divide(step1, 5);
+  const fahrenheit = add(step2, 32);
   return fahrenheit;
 }
 
@@ -315,12 +336,12 @@ console.log(celsiusToFahrenheit(25));    // 77
 ### Example 3: Percentage Calculations
 
 ```javascript
-const calc = new Calculator();
+const { divide, multiply } = require('./calculator');
 
 // Calculate percentage
 function calculatePercentage(value, total) {
-  const ratio = calc.divide(value, total);
-  const percentage = calc.multiply(ratio, 100);
+  const ratio = divide(value, total);
+  const percentage = multiply(ratio, 100);
   return percentage;
 }
 
@@ -331,15 +352,15 @@ console.log(calculatePercentage(3, 4));     // 75
 ### Example 4: Compound Calculations
 
 ```javascript
-const calc = new Calculator();
+const { add, divide } = require('./calculator');
 
 // Calculate average
 function average(numbers) {
   let sum = 0;
   for (const num of numbers) {
-    sum = calc.add(sum, num);
+    sum = add(sum, num);
   }
-  return calc.divide(sum, numbers.length);
+  return divide(sum, numbers.length);
 }
 
 console.log(average([10, 20, 30, 40]));  // 25
@@ -348,11 +369,11 @@ console.log(average([10, 20, 30, 40]));  // 25
 ### Example 5: Error Handling
 
 ```javascript
-const calc = new Calculator();
+const { divide } = require('./calculator');
 
 function safeDivide(a, b) {
   try {
-    return calc.divide(a, b);
+    return divide(a, b);
   } catch (error) {
     console.error(`Cannot divide: ${error.message}`);
     return null;
@@ -367,29 +388,29 @@ console.log(safeDivide(10, 0));    // Cannot divide: Division by zero is not all
 ### Example 6: Chaining Operations
 
 ```javascript
-const calc = new Calculator();
+const { add, multiply, divide } = require('./calculator');
 
 // Calculate: (10 + 5) * 2 / 3
-const step1 = calc.add(10, 5);          // 15
-const step2 = calc.multiply(step1, 2);  // 30
-const result = calc.divide(step2, 3);   // 10
+const step1 = add(10, 5);          // 15
+const step2 = multiply(step1, 2);  // 30
+const result = divide(step2, 3);   // 10
 
-console.log(result);                    // 10
+console.log(result);                // 10
 ```
 
 ### Example 7: Financial Calculations
 
 ```javascript
-const calc = new Calculator();
+const { add, multiply } = require('./calculator');
 
 // Calculate compound interest
 function compoundInterest(principal, rate, time) {
   // A = P(1 + r)^t (simplified to one year for demo)
-  const rateMultiplier = calc.add(1, rate);
+  const rateMultiplier = add(1, rate);
   let amount = principal;
   
   for (let i = 0; i < time; i++) {
-    amount = calc.multiply(amount, rateMultiplier);
+    amount = multiply(amount, rateMultiplier);
   }
   
   return amount;
@@ -411,43 +432,51 @@ The Calculator throws errors in the following situations:
 #### 1. Invalid Type Error
 
 ```javascript
-calc.add('5', 3);
+const { add, multiply, divide } = require('./calculator');
+
+add('5', 3);
 // Error: Both arguments must be numbers
 
-calc.multiply(null, 5);
+multiply(null, 5);
 // Error: Both arguments must be numbers
 
-calc.divide([1, 2], 3);
+divide([1, 2], 3);
 // Error: Both arguments must be numbers
 ```
 
 #### 2. NaN Error
 
 ```javascript
-calc.add(NaN, 5);
+const { add, subtract } = require('./calculator');
+
+add(NaN, 5);
 // Error: Arguments cannot be NaN
 
-calc.subtract(10, NaN);
+subtract(10, NaN);
 // Error: Arguments cannot be NaN
 ```
 
 #### 3. Infinity Error
 
 ```javascript
-calc.multiply(Infinity, 5);
+const { multiply, divide } = require('./calculator');
+
+multiply(Infinity, 5);
 // Error: Arguments must be finite numbers
 
-calc.divide(10, -Infinity);
+divide(10, -Infinity);
 // Error: Arguments must be finite numbers
 ```
 
 #### 4. Division by Zero Error
 
 ```javascript
-calc.divide(10, 0);
+const { divide } = require('./calculator');
+
+divide(10, 0);
 // Error: Division by zero is not allowed
 
-calc.divide(0, 0);
+divide(0, 0);
 // Error: Division by zero is not allowed
 ```
 
@@ -456,13 +485,15 @@ calc.divide(0, 0);
 #### Use Try-Catch Blocks
 
 ```javascript
+const { add, subtract, multiply, divide } = require('./calculator');
+
 function safeCalculation(operation, a, b) {
   try {
     switch(operation) {
-      case 'add': return calc.add(a, b);
-      case 'subtract': return calc.subtract(a, b);
-      case 'multiply': return calc.multiply(a, b);
-      case 'divide': return calc.divide(a, b);
+      case 'add': return add(a, b);
+      case 'subtract': return subtract(a, b);
+      case 'multiply': return multiply(a, b);
+      case 'divide': return divide(a, b);
       default: throw new Error('Unknown operation');
     }
   } catch (error) {
@@ -475,6 +506,8 @@ function safeCalculation(operation, a, b) {
 #### Validate Inputs Before Calculation
 
 ```javascript
+const calculator = require('./calculator');
+
 function validateAndCalculate(a, b, operation) {
   // Pre-validation
   if (typeof a !== 'number' || typeof b !== 'number') {
@@ -486,7 +519,7 @@ function validateAndCalculate(a, b, operation) {
   }
   
   try {
-    const result = calc[operation](a, b);
+    const result = calculator[operation](a, b);
     return { success: true, result };
   } catch (error) {
     return { success: false, error: error.message };
@@ -497,9 +530,11 @@ function validateAndCalculate(a, b, operation) {
 #### Provide User-Friendly Feedback
 
 ```javascript
+const calculator = require('./calculator');
+
 function displayCalculation(a, b, operation) {
   try {
-    const result = calc[operation](a, b);
+    const result = calculator[operation](a, b);
     console.log(`✓ ${a} ${getSymbol(operation)} ${b} = ${result}`);
   } catch (error) {
     console.log(`✗ Error: ${error.message}`);
@@ -556,17 +591,17 @@ agentic-workflow-test/
 
 The Calculator follows these conventions:
 
-- **JSDoc comments** for all public methods
-- **Private methods** prefixed with underscore (`_validateNumbers`)
+- **JSDoc comments** for all public functions
+- **Pure functions** with no side effects
 - **Clear error messages** that explain what went wrong
 - **Input validation** before processing
-- **No side effects** - all methods are pure functions
+- **Function-based architecture** for better tree-shaking
 
 ### Adding New Operations
 
 To add a new operation:
 
-1. **Add the method to Calculator class:**
+1. **Add the function to calculator.js:**
 
 ```javascript
 /**
@@ -575,10 +610,20 @@ To add a new operation:
  * @param {number} exponent - The exponent
  * @returns {number} base raised to the power of exponent
  */
-power(base, exponent) {
-  this._validateNumbers(base, exponent);
+function power(base, exponent) {
+  validateNumbers(base, exponent);
   return Math.pow(base, exponent);
 }
+
+// Export the new function
+module.exports = {
+  add,
+  subtract,
+  multiply,
+  divide,
+  power,  // Add new function to exports
+  validateNumbers
+};
 ```
 
 2. **Add comprehensive tests:**
@@ -586,11 +631,13 @@ power(base, exponent) {
 ```javascript
 describe('Power', () => {
   test('should calculate power of positive numbers', () => {
-    expect(calc.power(2, 3)).toBe(8);
+    const { power } = require('./calculator');
+    expect(power(2, 3)).toBe(8);
   });
   
   test('should handle negative exponents', () => {
-    expect(calc.power(2, -1)).toBe(0.5);
+    const { power } = require('./calculator');
+    expect(power(2, -1)).toBe(0.5);
   });
   
   // Add more tests...
@@ -673,7 +720,9 @@ For detailed test information, see [TESTING_GUIDE.md](../TESTING_GUIDE.md) and [
 JavaScript uses IEEE 754 floating-point arithmetic, which can produce unexpected results:
 
 ```javascript
-calc.add(0.1, 0.2);
+const { add } = require('./calculator');
+
+add(0.1, 0.2);
 // Returns: 0.30000000000000004
 // Expected: 0.3
 ```
@@ -684,25 +733,30 @@ calc.add(0.1, 0.2);
 
 1. **Round results for display:**
 ```javascript
-const result = calc.add(0.1, 0.2);
+const { add } = require('./calculator');
+const result = add(0.1, 0.2);
 console.log(result.toFixed(2));  // "0.30"
 ```
 
 2. **Use comparison with tolerance:**
 ```javascript
+const { add } = require('./calculator');
+
 function areEqual(a, b, tolerance = 0.0001) {
   return Math.abs(a - b) < tolerance;
 }
 
-areEqual(calc.add(0.1, 0.2), 0.3);  // true
+areEqual(add(0.1, 0.2), 0.3);  // true
 ```
 
 3. **For financial calculations, use integers (cents):**
 ```javascript
+const { add, divide } = require('./calculator');
+
 // Instead of $0.10 + $0.20
 // Use 10 cents + 20 cents
-const cents = calc.add(10, 20);  // 30
-const dollars = calc.divide(cents, 100);  // 0.30
+const cents = add(10, 20);  // 30
+const dollars = divide(cents, 100);  // 0.30
 ```
 
 ### Very Large Numbers
@@ -710,7 +764,9 @@ const dollars = calc.divide(cents, 100);  // 0.30
 The Calculator validates that numbers are finite but doesn't prevent overflow:
 
 ```javascript
-calc.multiply(Number.MAX_SAFE_INTEGER, 2);
+const { multiply } = require('./calculator');
+
+multiply(Number.MAX_SAFE_INTEGER, 2);
 // May produce unexpected results beyond MAX_SAFE_INTEGER
 
 // For very large numbers, consider BigInt (future enhancement)
@@ -722,13 +778,13 @@ The Calculator supports both CommonJS and ES6 modules:
 
 ```javascript
 // CommonJS
-const Calculator = require('./calculator');
+const { add, subtract, multiply, divide } = require('./calculator');
 
 // ES6
-import Calculator from './calculator.js';
+import { add, subtract, multiply, divide } from './calculator.js';
 ```
 
-The conditional export code (lines 79-84) ensures compatibility with both systems.
+The module exports individual functions that can be imported selectively or all together.
 
 ---
 
@@ -741,8 +797,8 @@ The conditional export code (lines 79-84) ensures compatibility with both system
 ```html
 <script src="calculator.js"></script>
 <script>
-  const calc = new Calculator();
-  console.log(calc.add(5, 3));
+  const { add } = window; // Functions are exported to window
+  console.log(add(5, 3)); // 8
 </script>
 ```
 
@@ -752,21 +808,23 @@ The conditional export code (lines 79-84) ensures compatibility with both system
 
 ### Q: Can I perform operations with more than two numbers?
 
-**A:** Yes, by chaining operations:
+**A:** Yes, by chaining function calls:
 
 ```javascript
-const result = calc.add(calc.add(1, 2), 3);  // 6
+const { add } = require('./calculator');
+
+const result = add(add(1, 2), 3);  // 6
 
 // Or use a loop
 let sum = 0;
 for (const num of [1, 2, 3, 4, 5]) {
-  sum = calc.add(sum, num);
+  sum = add(sum, num);
 }
 ```
 
-### Q: Why doesn't it support operator overloading like `calc(5 + 3)`?
+### Q: Why doesn't it support operator overloading like `5 + 3`?
 
-**A:** JavaScript doesn't support operator overloading for custom objects. You must use method calls.
+**A:** JavaScript doesn't support operator overloading for custom functions. You must use function calls like `add(5, 3)`.
 
 ### Q: Is this production-ready?
 
@@ -788,14 +846,10 @@ for (const num of [1, 2, 3, 4, 5]) {
 
 ```typescript
 // calculator.d.ts
-declare class Calculator {
-  add(a: number, b: number): number;
-  subtract(a: number, b: number): number;
-  multiply(a: number, b: number): number;
-  divide(a: number, b: number): number;
-}
-
-export = Calculator;
+export function add(a: number, b: number): number;
+export function subtract(a: number, b: number): number;
+export function multiply(a: number, b: number): number;
+export function divide(a: number, b: number): number;
 ```
 
 ### Q: What's the performance like?
@@ -811,14 +865,13 @@ export = Calculator;
 
 ```javascript
 // React
-import Calculator from './calculator';
-const calc = new Calculator();
+import { add, multiply } from './calculator';
 
 function CalculatorComponent() {
   const [result, setResult] = useState(0);
   
   const handleAdd = () => {
-    setResult(calc.add(5, 3));
+    setResult(add(5, 3));
   };
   
   return <div>{result}</div>;
