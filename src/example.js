@@ -2,33 +2,30 @@
  * Example usage of the Calculator module
  */
 
-const Calculator = require('./calculator');
-
-// Create a new calculator instance
-const calc = new Calculator();
+const { add, subtract, multiply, divide } = require('./calculator');
 
 console.log('=== Calculator Examples ===\n');
 
 // Addition
 console.log('Addition:');
-console.log(`5 + 3 = ${calc.add(5, 3)}`);
-console.log(`-10 + 25 = ${calc.add(-10, 25)}`);
-console.log(`0.1 + 0.2 = ${calc.add(0.1, 0.2)}`);
+console.log(`5 + 3 = ${add(5, 3)}`);
+console.log(`-10 + 25 = ${add(-10, 25)}`);
+console.log(`0.1 + 0.2 = ${add(0.1, 0.2)}`);
 
 // Subtraction
 console.log('\nSubtraction:');
-console.log(`10 - 4 = ${calc.subtract(10, 4)}`);
-console.log(`5 - 12 = ${calc.subtract(5, 12)}`);
+console.log(`10 - 4 = ${subtract(10, 4)}`);
+console.log(`5 - 12 = ${subtract(5, 12)}`);
 
 // Multiplication
 console.log('\nMultiplication:');
-console.log(`6 * 7 = ${calc.multiply(6, 7)}`);
-console.log(`-3 * 4 = ${calc.multiply(-3, 4)}`);
+console.log(`6 * 7 = ${multiply(6, 7)}`);
+console.log(`-3 * 4 = ${multiply(-3, 4)}`);
 
 // Division
 console.log('\nDivision:');
-console.log(`20 / 4 = ${calc.divide(20, 4)}`);
-console.log(`7 / 2 = ${calc.divide(7, 2)}`);
+console.log(`20 / 4 = ${divide(20, 4)}`);
+console.log(`7 / 2 = ${divide(7, 2)}`);
 
 // Error handling examples
 console.log('\n=== Error Handling Examples ===\n');
@@ -36,7 +33,7 @@ console.log('\n=== Error Handling Examples ===\n');
 // Division by zero
 try {
   console.log('Attempting to divide by zero:');
-  calc.divide(10, 0);
+  divide(10, 0);
 } catch (error) {
   console.log(`Error: ${error.message}`);
 }
@@ -44,7 +41,7 @@ try {
 // Invalid input types
 try {
   console.log('\nAttempting to add string and number:');
-  calc.add('5', 3);
+  add('5', 3);
 } catch (error) {
   console.log(`Error: ${error.message}`);
 }
@@ -52,7 +49,7 @@ try {
 // NaN handling
 try {
   console.log('\nAttempting to use NaN:');
-  calc.multiply(NaN, 5);
+  multiply(NaN, 5);
 } catch (error) {
   console.log(`Error: ${error.message}`);
 }
@@ -60,7 +57,7 @@ try {
 // Infinity handling
 try {
   console.log('\nAttempting to use Infinity:');
-  calc.add(Infinity, 5);
+  add(Infinity, 5);
 } catch (error) {
   console.log(`Error: ${error.message}`);
 }
