@@ -1,8 +1,29 @@
 # LAN Device Scanner - PowerShell Script
 
+## ⚠️ CRITICAL WARNING - READ FIRST
+
+**PRODUCTION READINESS**: ⚠️ **NOT PRODUCTION READY**
+
+This script contains a **critical bug** that prevents full execution:
+- **Bug**: Reserved variable name `$host` on line 931 blocks workflow
+- **Impact**: Script cannot complete full network scans
+- **Status**: Tested with 66.1% pass rate (37/56 tests passed)
+- **Action Required**: See [KNOWN-ISSUES.md](KNOWN-ISSUES.md) for complete details and fixes
+
+**IMPORTANT DOCUMENTATION**:
+- 📖 [Known Issues](KNOWN-ISSUES.md) - **READ THIS FIRST** - Critical bugs and workarounds
+- 📖 [User Guide](USER-GUIDE.md) - Comprehensive usage instructions
+- 📖 [Prerequisites](PREREQUISITES.md) - Requirements and compatibility
+- 📖 [Developer Guide](DEVELOPER-GUIDE.md) - Extending and contributing
+- 📊 [Test Report](TEST-REPORT.md) - Detailed test results and analysis
+
+---
+
 ## Overview
 
 `Scan-LANDevices.ps1` is a comprehensive PowerShell script for Windows 11 that scans your local area network (LAN) to discover devices, identify their types, and discover exposed API endpoints.
+
+**Current Status**: Requires bug fixes before production use. Individual functions work correctly and can be used independently.
 
 ## Features
 
@@ -18,10 +39,18 @@
 
 ## Requirements
 
+⚠️ **See [PREREQUISITES.md](PREREQUISITES.md) for complete requirements**
+
+**Essential Requirements**:
 - **Operating System**: Windows 11 (or Windows 10 with PowerShell 5.1+)
-- **PowerShell Version**: 5.1 or higher
+- **PowerShell Version**: 5.1 or higher (tested on 7.4.13)
 - **Permissions**: Run as Administrator for best results (ARP cache access, network operations)
 - **Network**: Active network connection to LAN
+- **Firewall**: ICMP (ping) enabled
+
+**Platform Support**:
+- ✅ Windows 11/10: Full support
+- ⚠️ Linux/macOS: Partial support (use manual subnet specification)
 
 ## Installation
 
@@ -35,10 +64,31 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 ## Usage
 
+⚠️ **IMPORTANT**: Due to critical bug #1, automatic scanning is currently non-functional. See [USER-GUIDE.md](USER-GUIDE.md) for detailed usage and workarounds.
+
 ### Basic Usage (Auto-detect local subnets)
 
+⚠️ **Currently Broken** - Critical `$host` variable bug prevents execution
+
 ```powershell
+# This will fail with current version - see KNOWN-ISSUES.md for fix
 .\Scan-LANDevices.ps1
+```
+
+### Recommended Workaround
+
+Use manual subnet specification or individual functions:
+
+```powershell
+# Manual subnet specification (works correctly)
+.\Scan-LANDevices.ps1 -SubnetCIDR @("192.168.1.0/24")
+
+# OR use individual functions
+. .\Scan-LANDevices.ps1
+$aliveHosts = Invoke-SubnetScan -CIDR "192.168.1.0/24"
+foreach ($ip in $aliveHosts) {
+    Get-DeviceInformation -IPAddress $ip
+}
 ```
 
 This will:
@@ -239,7 +289,54 @@ The script includes comprehensive error handling:
 - **Network Impact**: Scanning activity may be logged by security devices and firewalls
 - **Run as Administrator**: Recommended for full functionality, especially ARP cache access
 
+## Known Issues
+
+⚠️ **See [KNOWN-ISSUES.md](KNOWN-ISSUES.md) for complete list**
+
+### 🔴 CRITICAL: Reserved Variable Bug (Line 931)
+
+**Error**: "Cannot overwrite variable Host because it is read-only or constant"
+
+**Impact**: Blocks full workflow execution
+
+**Required Fix**:
+```powershell
+# Change line 931 from:
+foreach ($host in $allHosts) {
+
+# To:
+foreach ($hostIP in $allHosts) {
+```
+
+### 🟡 Functions May Return Null
+
+Functions like `Get-DeviceHostname`, `Get-OpenPorts`, etc. may return `$null` instead of safe defaults. Always check for null:
+
+```powershell
+$hostname = Get-DeviceHostname -IPAddress $ip
+if ($hostname) {
+    Write-Host "Hostname: $hostname"
+} else {
+    Write-Host "Hostname: Unknown"
+}
+```
+
+## Testing Status
+
+- **Total Tests**: 56 test cases
+- **Pass Rate**: 66.1% (37 passed, 19 failed)
+- **Test Environment**: Linux with PowerShell 7.4.13
+- **Test Limitations**: No real IoT devices tested
+- **Function Isolation**: ✅ All 19 functions confirmed modular
+
+See [TEST-REPORT.md](TEST-REPORT.md) and [TEST-SUMMARY.md](TEST-SUMMARY.md) for detailed results.
+
 ## Troubleshooting
+
+⚠️ **See [USER-GUIDE.md](USER-GUIDE.md) for comprehensive troubleshooting**
+
+### Critical Bug: "Cannot overwrite variable Host"
+**Solution**: Apply fix from [KNOWN-ISSUES.md](KNOWN-ISSUES.md) or use individual functions
 
 ### No Devices Found
 - Ensure you're on the correct network
@@ -303,10 +400,72 @@ Modify the `$deviceSpecificPaths` hashtable in `Find-APIEndpoints`:
 $deviceSpecificPaths['New Device Type'] = @('/api/custom', '/custom/endpoint')
 ```
 
+## Performance Expectations
+
+Based on testing:
+
+| Network Size | Expected Duration | Status |
+|--------------|------------------|---------|
+| /30 (2-4 hosts) | <5 seconds | ✅ Tested |
+| /24 (254 hosts) | 2-3 minutes | Estimated |
+| Per device discovery | 5-20 seconds | Tested |
+
+See [USER-GUIDE.md](USER-GUIDE.md) for performance tuning recommendations.
+
+## Documentation
+
+### User Documentation
+- 📖 **[USER-GUIDE.md](USER-GUIDE.md)** - Comprehensive user guide with examples
+- 📖 **[PREREQUISITES.md](PREREQUISITES.md)** - Requirements and compatibility
+- 📖 **[KNOWN-ISSUES.md](KNOWN-ISSUES.md)** - Critical bugs and workarounds
+
+### Developer Documentation
+- 📖 **[DEVELOPER-GUIDE.md](DEVELOPER-GUIDE.md)** - Extending and contributing
+- 📖 **[TEST-REPORT.md](TEST-REPORT.md)** - Detailed test analysis
+- 📖 **[TEST-SUMMARY.md](TEST-SUMMARY.md)** - Quick test reference
+
+### Development Documentation
+- 📖 **[DEVELOPMENT-SUMMARY.md](DEVELOPMENT-SUMMARY.md)** - Implementation notes
+- 📖 **[TESTING-CHECKLIST.md](TESTING-CHECKLIST.md)** - Test coverage matrix
+
+## Production Readiness Checklist
+
+Before using in production:
+
+- [ ] **Apply critical bug fix** from [KNOWN-ISSUES.md](KNOWN-ISSUES.md)
+- [ ] **Test on Windows 11** (target platform)
+- [ ] **Validate with real devices** in your environment
+- [ ] **Review security considerations**
+- [ ] **Notify network administrators** before scanning
+- [ ] **Test at expected scale** (full subnet scan)
+- [ ] **Implement null checking** for function returns
+
+**Estimated Fix Time**: 4-8 hours for all critical issues
+
+## Contributing
+
+See [DEVELOPER-GUIDE.md](DEVELOPER-GUIDE.md) for:
+- Architecture overview
+- Function reference
+- Adding new device types
+- Testing guidelines
+- Code quality standards
+
 ## License
 
 See [LICENSE](LICENSE) file for details.
 
 ## Support
 
-For issues, questions, or contributions, please refer to the repository documentation.
+For issues, questions, or contributions:
+
+1. **Review documentation** - Check guides above
+2. **Check known issues** - See [KNOWN-ISSUES.md](KNOWN-ISSUES.md)
+3. **Review test reports** - Understand current behavior
+4. **Report new issues** - With full details and environment info
+
+---
+
+**Document Version**: 1.0  
+**Last Updated**: 2025-12-13  
+**Status**: Initial release - requires bug fixes before production use
