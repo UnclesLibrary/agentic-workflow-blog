@@ -211,12 +211,12 @@ function Get-IPRange {
         $networkInt = $ipInt -band $mask
         $broadcastInt = $networkInt -bor (-bnot $mask)
         
-        # Generate all IPs in range
-        $ips = @()
+        # Generate all IPs in range using ArrayList for better performance
+        $ips = New-Object System.Collections.ArrayList
         for ($i = $networkInt + 1; $i -lt $broadcastInt; $i++) {
             $bytes = [BitConverter]::GetBytes($i)
             [Array]::Reverse($bytes)
-            $ips += [System.Net.IPAddress]::new($bytes).ToString()
+            [void]$ips.Add([System.Net.IPAddress]::new($bytes).ToString())
         }
         
         return $ips
@@ -307,58 +307,70 @@ function Get-HttpInfo {
         $protocols = @('https', 'http')
     }
     
-    foreach ($protocol in $protocols) {
-        try {
-            $uri = "${protocol}://${IPAddress}:${Port}/"
-            
-            # Disable SSL certificate validation for self-signed certs (common in IoT devices)
-            if ($protocol -eq 'https') {
-                [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-                [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11
-                $result.SSL = $true
-            }
-            
-            $request = [System.Net.WebRequest]::Create($uri)
-            $request.Timeout = $Timeout
-            $request.Method = "GET"
-            $request.UserAgent = "NetworkDeviceScanner/1.0"
-            
-            $response = $request.GetResponse()
-            $result.StatusCode = [int]$response.StatusCode
-            
-            # Collect headers
-            foreach ($header in $response.Headers.AllKeys) {
-                $result.Headers[$header] = $response.Headers[$header]
-            }
-            
-            # Read content (first 4KB only)
-            $stream = $response.GetResponseStream()
-            $reader = New-Object System.IO.StreamReader($stream)
-            $result.Content = $reader.ReadToEnd().Substring(0, [Math]::Min(4096, $reader.BaseStream.Length))
-            
-            $reader.Close()
-            $stream.Close()
-            $response.Close()
-            
-            return $result
-        }
-        catch [System.Net.WebException] {
-            # If we get a web exception with a response, it's still a valid HTTP service
-            if ($_.Exception.Response) {
-                $result.StatusCode = [int]$_.Exception.Response.StatusCode
-                foreach ($header in $_.Exception.Response.Headers.AllKeys) {
-                    $result.Headers[$header] = $_.Exception.Response.Headers[$header]
+    $originalCallback = $null
+    try {
+        foreach ($protocol in $protocols) {
+            try {
+                $uri = "${protocol}://${IPAddress}:${Port}/"
+                
+                # Disable SSL certificate validation for self-signed certs (common in IoT devices)
+                # Note: This affects only requests made during this session. Restore it after scanning if needed.
+                if ($protocol -eq 'https') {
+                    $originalCallback = [System.Net.ServicePointManager]::ServerCertificateValidationCallback
+                    [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+                    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11
+                    $result.SSL = $true
                 }
+                
+                $request = [System.Net.WebRequest]::Create($uri)
+                $request.Timeout = $Timeout
+                $request.Method = "GET"
+                $request.UserAgent = "NetworkDeviceScanner/1.0"
+                
+                $response = $request.GetResponse()
+                $result.StatusCode = [int]$response.StatusCode
+                
+                # Collect headers
+                foreach ($header in $response.Headers.AllKeys) {
+                    $result.Headers[$header] = $response.Headers[$header]
+                }
+                
+                # Read content (first 4KB only)
+                $stream = $response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($stream)
+                $fullContent = $reader.ReadToEnd()
+                $result.Content = $fullContent.Substring(0, [Math]::Min(4096, $fullContent.Length))
+                
+                $reader.Close()
+                $stream.Close()
+                $response.Close()
+                
                 return $result
             }
+            catch [System.Net.WebException] {
+                # If we get a web exception with a response, it's still a valid HTTP service
+                if ($_.Exception.Response) {
+                    $result.StatusCode = [int]$_.Exception.Response.StatusCode
+                    foreach ($header in $_.Exception.Response.Headers.AllKeys) {
+                        $result.Headers[$header] = $_.Exception.Response.Headers[$header]
+                    }
+                    return $result
+                }
+            }
+            catch {
+                # Try next protocol
+                continue
+            }
         }
-        catch {
-            # Try next protocol
-            continue
+        
+        return $result
+    }
+    finally {
+        # Restore original certificate validation callback
+        if ($null -ne $originalCallback) {
+            [System.Net.ServicePointManager]::ServerCertificateValidationCallback = $originalCallback
         }
     }
-    
-    return $result
 }
 
 <#
