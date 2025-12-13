@@ -928,11 +928,11 @@ function Start-LANDeviceScan {
     $devices = @()
     $counter = 0
     
-    foreach ($host in $allHosts) {
+    foreach ($hostIP in $allHosts) {
         $counter++
-        Write-Progress -Activity "Discovering devices" -Status "Processing $host ($counter of $($allHosts.Count))" -PercentComplete (($counter / $allHosts.Count) * 100)
+        Write-Progress -Activity "Discovering devices" -Status "Processing $hostIP ($counter of $($allHosts.Count))" -PercentComplete (($counter / $allHosts.Count) * 100)
         
-        $deviceInfo = Get-DeviceInformation -IPAddress $host
+        $deviceInfo = Get-DeviceInformation -IPAddress $hostIP
         $devices += $deviceInfo
     }
     
